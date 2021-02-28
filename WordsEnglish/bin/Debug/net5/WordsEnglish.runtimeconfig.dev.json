@@ -1,0 +1,8 @@
+{
+  "runtimeOptions": {
+    "additionalProbingPaths": [
+      "/home/diper/.dotnet/store/|arch|/|tfm|",
+      "/home/diper/.nuget/packages"
+    ]
+  }
+}

@@ -1,0 +1,8 @@
+/home/diper/Рабочий стол/WordsEnglish/WordsEnglish.Core/bin/Debug/net5/WordsEnglish.Core.deps.json
+/home/diper/Рабочий стол/WordsEnglish/WordsEnglish.Core/bin/Debug/net5/WordsEnglish.Core.dll
+/home/diper/Рабочий стол/WordsEnglish/WordsEnglish.Core/bin/Debug/net5/WordsEnglish.Core.pdb
+/home/diper/Рабочий стол/WordsEnglish/WordsEnglish.Core/obj/Debug/net5/WordsEnglish.Core.fsprojAssemblyReference.cache
+/home/diper/Рабочий стол/WordsEnglish/WordsEnglish.Core/obj/Debug/net5/WordsEnglish.Core.AssemblyInfoInputs.cache
+/home/diper/Рабочий стол/WordsEnglish/WordsEnglish.Core/obj/Debug/net5/WordsEnglish.Core.AssemblyInfo.fs
+/home/diper/Рабочий стол/WordsEnglish/WordsEnglish.Core/obj/Debug/net5/WordsEnglish.Core.dll
+/home/diper/Рабочий стол/WordsEnglish/WordsEnglish.Core/obj/Debug/net5/WordsEnglish.Core.pdb

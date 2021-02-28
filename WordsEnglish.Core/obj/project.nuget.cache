@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "dgSpecHash": "MUw8ELZ48x6eKR93H4HysOPHQs/1a2oahs+H5UGy4ZQ7bQovV2AKygBk8ensBP4YW58sIz4rrUo0Vjcv1skzMA==",
+  "success": true,
+  "projectFilePath": "/home/diper/Рабочий стол/WordsEnglish/WordsEnglish.Core/WordsEnglish.Core.fsproj",
+  "expectedPackageFiles": [
+    "/home/diper/.nuget/packages/fsharp.core/5.0.0/fsharp.core.5.0.0.nupkg.sha512",
+    "/home/diper/.nuget/packages/npgsql/5.0.0/npgsql.5.0.0.nupkg.sha512",
+    "/home/diper/.nuget/packages/npgsql.fsharp/3.12.4/npgsql.fsharp.3.12.4.nupkg.sha512",
+    "/home/diper/.nuget/packages/ply/0.3.1/ply.0.3.1.nupkg.sha512",
+    "/home/diper/.nuget/packages/system.runtime.compilerservices.unsafe/4.6.0/system.runtime.compilerservices.unsafe.4.6.0.nupkg.sha512",
+    "/home/diper/.nuget/packages/system.threading.tasks.extensions/4.5.4/system.threading.tasks.extensions.4.5.4.nupkg.sha512",
+    "/home/diper/.nuget/packages/microsoft.netcore.app.ref/5.0.0/microsoft.netcore.app.ref.5.0.0.nupkg.sha512",
+    "/home/diper/.nuget/packages/microsoft.aspnetcore.app.ref/5.0.0/microsoft.aspnetcore.app.ref.5.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

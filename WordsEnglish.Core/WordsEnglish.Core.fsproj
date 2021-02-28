@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net5</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ConnectionDB.fs" />
+    <Compile Include="WordDB.fs" />
+    <Compile Include="ListWordsDB.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Npgsql.FSharp" Version="3.12.4" />
+  </ItemGroup>
+</Project>
