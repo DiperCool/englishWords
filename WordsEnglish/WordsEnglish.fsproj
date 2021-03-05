@@ -4,6 +4,9 @@
     <TargetFramework>net5</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="WordsHelper.fs" />
+    <Compile Include="WrittingWords.fs" />
+    <Compile Include="PanelSelectLearning.fs" />
     <Compile Include="Word.fs" />
     <Compile Include="ListWords.fs" />
     <Compile Include="Shell.fs" />

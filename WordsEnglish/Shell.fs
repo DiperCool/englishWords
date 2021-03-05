@@ -21,16 +21,22 @@ module Shell =
     type AppView = 
         | ListsWords
         | Words
+        | WrittingWords
+        | PanelSelectLearning
     type State =
         { 
             ListWordsState: ListWords.State
             AppView : AppView
             WordState : Word.State
+            WrittingWords: WrittingWords.State
+            PanelSelectLearning: PanelSelectLearning.State
         }
 
     type Msg =
         | ListWordsMsg of ListWords.Msg
         | WordMsg of Word.Msg
+        | WrittingWordsMsg of WrittingWords.Msg
+        | PanelSelectLearningMsg of PanelSelectLearning.Msg
         | GoBack
     let init: State * Cmd<_>=
         /// If your children controls don't emit any commands
@@ -39,10 +45,21 @@ module Shell =
         /// you can add more init commands as you need
         let listWords,cmdListWords=ListWords.init;
         let word, cmdWord = Word.init;
-        {ListWordsState=listWords; AppView= ListsWords; WordState= word},Cmd.batch [ 
-                                                                                    Cmd.map ListWordsMsg cmdListWords
-                                                                                    Cmd.map WordMsg cmdWord
-                                                                                   ]
+        let writtingWords, cmdWrittingWords = WrittingWords.init;
+        let panelSelectLearning, cmdPanelSelectLearning = PanelSelectLearning.init;
+        {
+            ListWordsState=listWords; 
+            AppView= ListsWords; 
+            WordState= word; 
+            WrittingWords=writtingWords
+            PanelSelectLearning= panelSelectLearning
+        },
+        Cmd.batch [
+            Cmd.map PanelSelectLearningMsg cmdPanelSelectLearning
+            Cmd.map ListWordsMsg cmdListWords
+            Cmd.map WordMsg cmdWord
+            Cmd.map WrittingWordsMsg cmdWrittingWords
+           ]
 
     let update (msg: Msg) (state: State): State * Cmd<_> =
         match msg with
@@ -51,12 +68,37 @@ module Shell =
                 | ListWords.Msg.ViewWord listWords ->
                     let s, cmd = Word.update (Word.Msg.SetListWord(listWords)) state.WordState
                     {state with AppView = Words; WordState=s }, Cmd.map WordMsg cmd
+                | ListWords.Msg.Learn listWords ->
+                    let s, cmd = PanelSelectLearning.update (PanelSelectLearning.Msg.SetListWords(listWords)) state.PanelSelectLearning
+                    {state with AppView = PanelSelectLearning; PanelSelectLearning=s }, Cmd.map PanelSelectLearningMsg cmd
                 | _ ->
                     let s, cmd = ListWords.update msg state.ListWordsState
                     {state with ListWordsState = s}, Cmd.map ListWordsMsg cmd
         | WordMsg msg ->
             let s, cmd = Word.update msg state.WordState
             {state with WordState = s}, Cmd.batch[Cmd.map WordMsg cmd]
+        | WrittingWordsMsg msg->
+            match msg with
+            | WrittingWords.Msg.GoBack ->
+                let s, cmd = WrittingWords.update msg state.WrittingWords
+                let sListWords, cmdListWords= ListWords.init
+                {state with WrittingWords=s;ListWordsState=sListWords}, Cmd.batch[
+                    Cmd.map WrittingWordsMsg cmd;
+                    Cmd.ofMsg GoBack;
+                    Cmd.map ListWordsMsg cmdListWords;
+                ]
+            | _ ->
+                let s, cmd = WrittingWords.update msg state.WrittingWords
+                {state with WrittingWords=s }, Cmd.map WrittingWordsMsg cmd
+        | PanelSelectLearningMsg msg ->
+            match msg with
+            | PanelSelectLearning.Msg.GoToWrittingWords listWords ->
+                let s, cmd = WrittingWords.update (WrittingWords.Msg.SetWords(listWords)) state.WrittingWords
+                {state with AppView = WrittingWords; WrittingWords=s }, Cmd.map WrittingWordsMsg cmd
+            | _ ->
+                let s, cmd = PanelSelectLearning.update msg state.PanelSelectLearning
+                {state with PanelSelectLearning=s }, Cmd.map PanelSelectLearningMsg cmd
+
         | GoBack -> {state with AppView = ListsWords}, Cmd.none
     let view (state: State) (dispatch) =
         StackPanel.create[
@@ -68,7 +110,10 @@ module Shell =
                 ]
                 (match state.AppView with
                     | ListsWords -> ListWords.view state.ListWordsState (ListWordsMsg>> dispatch)
-                    | Words -> Word.view state.WordState (WordMsg >> dispatch))
+                    | Words -> Word.view state.WordState (WordMsg >> dispatch)
+                    | WrittingWords -> WrittingWords.view state.WrittingWords (WrittingWordsMsg >> dispatch)
+                    | PanelSelectLearning -> PanelSelectLearning.view state.PanelSelectLearning (PanelSelectLearningMsg >> dispatch)
+                )
             ]
         ]
 

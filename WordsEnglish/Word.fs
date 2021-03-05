@@ -17,16 +17,10 @@ module Word
         Value: string
         Translate: string
     }
-    let emptyListWord: ListWordsDB.ListWords= {
-        id=0;
-        Name="";
-        TimeToRepiting= System.DateTime.Now;
-        Created = System.DateTime.Now;
-    }
 
     let init = 
         {
-            ListWord = emptyListWord;
+            ListWord = WordsHelper.emptyListWord;
             Words = List.empty
             Value =""
             Translate = ""

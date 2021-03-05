@@ -7,6 +7,7 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LevelHelper.fs" />
     <Compile Include="ConnectionDB.fs" />
     <Compile Include="WordDB.fs" />
     <Compile Include="ListWordsDB.fs" />
