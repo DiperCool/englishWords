@@ -52,7 +52,7 @@ module WrittingWords
                 state, (if state.ListWords.AmountRepetition=2 then Cmd.ofMsg SaveNewLevel else Cmd.ofMsg IncreaseAmountRepetition)
             else
                 state, Cmd.ofMsg NextWord
-        | NextWord -> {state with CurrentWord= state.Words.[state.IndexCurrentWord+1]; IndexCurrentWord= state.IndexCurrentWord+1; TextValue=""}, Cmd.none
+        | NextWord -> {state with CurrentWord= state.Words.[state.IndexCurrentWord+1]; IndexCurrentWord= state.IndexCurrentWord+1;TextValue=""}, Cmd.none
         | IncreaseAmountRepetition ->
             let res= ListWordsDB.updateAmountRepetition state.ListWords.id (state.ListWords.AmountRepetition+1)
             state, Cmd.ofMsg GoBack
@@ -73,6 +73,7 @@ module WrittingWords
                 ]
                 TextBox.create[
                     TextBox.watermark "enter the value"
+                    TextBox.text state.TextValue
                     TextBox.onTextChanged ( fun text -> dispatch(Text text))
                 ]
                 Button.create[
