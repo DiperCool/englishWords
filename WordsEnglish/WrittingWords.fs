@@ -19,6 +19,7 @@ module WrittingWords
     | Check
     | GoBack
     | IsEnd
+    | IncreaseAmountRepetition
     | SaveNewLevel
     type State = {
         CurrentWord : WordDB.Word;
@@ -48,20 +49,24 @@ module WrittingWords
                 state, Cmd.ofMsg GoBack
         | IsEnd ->
             if state.IndexCurrentWord+1> state.Words.Length-1 then
-                state, Cmd.ofMsg SaveNewLevel
+                state, (if state.ListWords.AmountRepetition=2 then Cmd.ofMsg SaveNewLevel else Cmd.ofMsg IncreaseAmountRepetition)
             else
                 state, Cmd.ofMsg NextWord
-        | NextWord -> {state with CurrentWord= state.Words.[state.IndexCurrentWord+1]; IndexCurrentWord= state.IndexCurrentWord+1}, Cmd.none
+        | NextWord -> {state with CurrentWord= state.Words.[state.IndexCurrentWord+1]; IndexCurrentWord= state.IndexCurrentWord+1; TextValue=""}, Cmd.none
+        | IncreaseAmountRepetition ->
+            let res= ListWordsDB.updateAmountRepetition state.ListWords.id (state.ListWords.AmountRepetition+1)
+            state, Cmd.ofMsg GoBack
         | SaveNewLevel ->
             let newLevel = LevelHelper.nextLevel state.ListWords.Level
-            let res = ListWordsDB.updateLevel state.ListWords.id newLevel ( LevelHelper.getTimeToRepeat  newLevel)
+            let res = ListWordsDB.updateLevel state.ListWords.id newLevel ( LevelHelper.getTimeToRepeat  newLevel) 0
             state, Cmd.ofMsg GoBack
+
         | GoBack -> init
     let view (state: State) (dispatch) =
         StackPanel.create[
             StackPanel.children[
                 TextBlock.create[
-                    TextBlock.text $"{state.ListWords.Name} learning"
+                    TextBlock.text $"{state.ListWords.Name}"
                 ]
                 TextBlock.create[
                     TextBlock.text state.CurrentWord.Translate

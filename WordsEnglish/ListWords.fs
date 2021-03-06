@@ -46,6 +46,7 @@ module ListWords
                 TimeToRepiting= System.DateTime.Now;
                 Created= System.DateTime.Now;
                 Level = "one"
+                AmountRepetition = 0
             } |> ignore
             state, Cmd.ofMsg LoadFromDb
         | UdateTextNewListWords (str) -> {state with TextNewListWords = str}, Cmd.none
@@ -56,6 +57,28 @@ module ListWords
             ListWordsDB.updateLevel item.id "two" |> ignore
             state, Cmd.ofMsg LoadFromDb
         | Learn listWords -> state, Cmd.none
+    let viewDots (item: ListWordsDB.ListWords)=
+        StackPanel.create[
+                StackPanel.orientation Orientation.Horizontal
+                StackPanel.children[
+                    TextBlock.create[
+                        TextBlock.foreground (if item.AmountRepetition>=1 then "green" else "white")
+                        TextBlock.fontSize 30.
+                        TextBlock.text "•"
+                    ]
+                    TextBlock.create[
+                        TextBlock.foreground (if item.AmountRepetition>=2 then "green" else "white")
+                        TextBlock.fontSize 30.
+                        TextBlock.text "•"
+                    ]
+                    TextBlock.create[
+                        TextBlock.foreground (if item.AmountRepetition>=3 then "green" else "white")
+                        TextBlock.fontSize 30.
+                        TextBlock.text "•"
+                    ]
+                    
+                ]
+            ]
     let viewListWords (notes) dispatch =
         StackPanel.create[
             StackPanel.children[for item in notes do
@@ -78,14 +101,22 @@ module ListWords
                                                 TextBlock.text(item.Name)
                                             ]
                                             if item.TimeToRepiting<System.DateTime.Now then
-                                                    Button.create[
+                                                StackPanel.create[
+                                                    StackPanel.orientation Orientation.Horizontal
+                                                    StackPanel.horizontalAlignment HorizontalAlignment.Right
+                                                    StackPanel.spacing 30.
                                                     Grid.column 3
-                                                    Button.horizontalAlignment HorizontalAlignment.Right
-                                                    Button.content "Learn" 
-                                                    Button.onClick ((fun _ -> 
-                                                                      dispatch (Learn item)
-                                                                    ), Always)
+                                                    StackPanel.children[
+                                                            yield viewDots item
+                                                            yield Button.create[
+                                                                Button.content "Learn" 
+                                                                Button.onClick ((fun _ -> 
+                                                                                  dispatch (Learn item)
+                                                                                ), Always)
+                                                            ]
+                                                            
                                                     ]
+                                                ]
                                                                              
                                         ]
                                    ]
@@ -93,7 +124,6 @@ module ListWords
                                 )
                         ]
         ]
-
            
     let view (state: State) (dispatch) =
         StackPanel.create[
