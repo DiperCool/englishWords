@@ -3,7 +3,7 @@ namespace WordsEnglish
 open Avalonia
 open Avalonia.Controls.ApplicationLifetimes
 open Avalonia.FuncUI
-
+open WordsEnglish.Core
 /// This is your application you can ose the initialize method to load styles
 /// or handle Life Cycle events of your application
 type App() =
@@ -24,6 +24,7 @@ module Program =
 
     [<EntryPoint>]
     let main (args: string []) =
+        DB.checkDatabase ()
         AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .UseSkia()

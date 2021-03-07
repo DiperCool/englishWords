@@ -16,5 +16,7 @@
   <ItemGroup>
     <PackageReference Include="FSharp.Json" Version="0.4.0" />
     <PackageReference Include="Npgsql.FSharp" Version="3.12.4" />
+    <PackageReference Include="FSharp.Data.Dapper" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Data.SQLite" Version="2.2.4" />
   </ItemGroup>
 </Project>

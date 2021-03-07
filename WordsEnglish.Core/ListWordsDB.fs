@@ -1,8 +1,9 @@
 namespace WordsEnglish.Core
 [<RequireQualifiedAccess>]
 module ListWordsDB =
-    open Npgsql.FSharp
-
+    open Microsoft.Data.Sqlite
+    open FSharp.Data.Dapper
+    [<CLIMutable>]
     type ListWords={
         id: int;
         Name : string;
@@ -12,61 +13,59 @@ module ListWordsDB =
         AmountRepetition : int
 
     }
-    let private map = 
-        fun (read: RowReader) ->
-            {
-                id = read.int "id";
-                Name = read.text "Name";
-                TimeToRepiting = (read.timestamp "TimeToRepiting").ToDateTime()
-                Created = (read.timestamp "Created").ToDateTime()
-                Level = read.string "Level"
-                AmountRepetition = read.int "AmountRepetition"
-            }
+
+    type ListWords2={
+        id: int;
+        Name : int;
+        TimeToRepiting: int
+        Created: int
+        Level : int
+        AmountRepetition : int
+
+    }
+   
+
     let createListWords (listWords: ListWords)=
-        DB.getConnectionString
-        |> Sql.connect
-        |> Sql.query """INSERT INTO "ListWords" VALUES (DEFAULT,@name, @timeToRepeat, @created, @level,@amountRepetition) RETURNING id"""
-        |> Sql.parameters [ 
-                            ("@name", Sql.text listWords.Name ); 
-                            ("@timeToRepeat", Sql.timestamp listWords.TimeToRepiting);
-                            ("@created", Sql.timestamp listWords.Created);
-                            ("@level", Sql.text listWords.Level);
-                            ("@amountRepetition", Sql.int listWords.AmountRepetition)
-                        ]
-        |> Sql.execute (fun read -> { listWords with id= read.int "id"}) |> ignore
+        DB.querySingleAsync<int>{
+            script "INSERT INTO ListWords (Name,TimeToRepiting, Created, Level, AmountRepetition) VALUES (@name, @timeToRepeat, @created, @level,@amountRepetition)"
+            parameters (dict 
+                    [
+                        "name", box listWords.Name; 
+                        "timeToRepeat", box listWords.TimeToRepiting;
+                        "created", box listWords.Created;
+                        "level", box listWords.Level;
+                        "amountRepetition", box listWords.AmountRepetition
+                    ])
+        }|> Async.RunSynchronously
     let getListWords page=
         let pagesize = 5;
         let offset = (page - 1) * pagesize
-        DB.getConnectionString
-                |> Sql.connect
-                |> Sql.query """SELECT * FROM "ListWords" ORDER BY "Created" DESC LIMIT @pagesize OFFSET @offset """
-                |> Sql.parameters[
-                            ("@pagesize", Sql.int pagesize);
-                            ("@offset", Sql.int offset)
-                        ]
-                |> Sql.execute map
-                |> DB.getResult
+        DB.querySeqAsync<ListWords>{
+            script "SELECT * FROM ListWords ORDER BY Created DESC LIMIT @pagesize OFFSET @offset  "
+            parameters (dict[
+                "pagesize", box pagesize;
+                "offset", box offset;
+            ])
+
+        }|> Async.RunSynchronously
     let updateLevel id level time amountRepetition=
-        DB.getConnectionString
-                |> Sql.connect
-                |> Sql.query """ UPDATE "ListWords" SET "Level"=@level , "TimeToRepiting"=@timeToRepeat, "AmountRepetition"=@amountRepetition WHERE "id"=@id """
-                |> Sql.parameters[
-                            ("@id", Sql.int id);
-                            ("@level", Sql.text level)
-                            ("@timeToRepeat", Sql.timestamp time)
-                            ("@amountRepetition", Sql.int amountRepetition)
-                        ]
-                |> Sql.execute map
-                |> DB.getResult
+       DB.querySingleAsync<int>{
+            script " UPDATE ListWords SET Level=@level , TimeToRepiting=@timeToRepeat, AmountRepetition=@amountRepetition WHERE id=@id "
+            parameters (dict[
+                ("@id", box id);
+                ("@level", box level)
+                ("@timeToRepeat", box time)
+                ("@amountRepetition", box amountRepetition)
+            ])
+        } |> Async.RunSynchronously
+       
     let updateAmountRepetition id amoutRepetition=
-        DB.getConnectionString
-                |> Sql.connect
-                |> Sql.query """ UPDATE "ListWords" SET "AmountRepetition"=@amountRepetition WHERE "id"=@id """
-                |> Sql.parameters[
-                            ("@id", Sql.int id);
-                            ("@amountRepetition", Sql.int amoutRepetition)
-                        ]
-                |> Sql.execute map
-                |> DB.getResult                        
+        DB.querySingleAsync<int>{
+            script " UPDATE ListWords SET AmountRepetition=@amountRepetition WHERE id=@id "
+            parameters (dict[
+                ("@id", box id);
+                ("@amountRepetition", box amoutRepetition)
+            ])
+        }|> Async.RunSynchronously                        
 
        

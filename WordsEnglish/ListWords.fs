@@ -37,7 +37,7 @@ module ListWords
     let update (msg: Msg) (state: State): State * Cmd<_> =
         match msg with
         | LoadFromDb ->
-            let res =ListWordsDB.getListWords state.Page
+            let res =ListWordsDB.getListWords state.Page |> List.ofSeq
             {state with ListsWords= res}, Cmd.none
         | CreateListWords ->
             ListWordsDB.createListWords {

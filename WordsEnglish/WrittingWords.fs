@@ -39,7 +39,7 @@ module WrittingWords
     let update (msg : Msg) (state: State) : State*Cmd<_>=
         match msg with
         | SetWords listWords ->
-            let words = WordDB.getWords listWords.id;
+            let words = (WordDB.getWords listWords.id )
             {state with ListWords = listWords; Words= words; CurrentWord= words.[0]}, Cmd.none
         | Text text -> {state with TextValue = text}, Cmd.none
         | Check ->
