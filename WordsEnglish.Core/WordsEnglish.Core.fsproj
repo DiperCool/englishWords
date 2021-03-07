@@ -7,12 +7,14 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TranslateHelper.fs" />
     <Compile Include="LevelHelper.fs" />
     <Compile Include="ConnectionDB.fs" />
     <Compile Include="WordDB.fs" />
     <Compile Include="ListWordsDB.fs" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="FSharp.Json" Version="0.4.0" />
     <PackageReference Include="Npgsql.FSharp" Version="3.12.4" />
   </ItemGroup>
 </Project>

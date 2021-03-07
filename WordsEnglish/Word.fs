@@ -11,27 +11,41 @@ module Word
     open Avalonia.FuncUI.Elmish
     open Avalonia.Layout
     open Avalonia.Media
+    open System.Threading
     type State={
         ListWord: ListWordsDB.ListWords
         Words: WordDB.Word list
         Value: string
         Translate: string
+        CancelToken : CancellationTokenSource
+        AutoComplete: string
     }
 
     let init = 
         {
             ListWord = WordsHelper.emptyListWord;
             Words = List.empty
-            Value =""
-            Translate = ""
-        }, Cmd.none
+            Value =null
+            Translate = null
+            CancelToken =  null
+            AutoComplete=""
+        }
+
     type Msg =
     | LoadFromDB
     | SetListWord of ListWordsDB.ListWords
     | Create
-    | NewValue of string
+    | NewValue of string * (Msg-> unit)
     | NewTranslate of string
-
+    | SetAutoComplete of string
+    | AutoCompleteClick
+    | ClearAutoComplete
+    let setAutoComplete str (dispatch: (Msg -> unit)) = 
+        async{
+            do! Async.Sleep 2000
+            let! result = TranslateHelper.getTranslate(str)
+            dispatch(SetAutoComplete(result))
+        }
     let update (msg : Msg) (state: State) : State*Cmd<_>=
         match msg with
         | LoadFromDB ->
@@ -41,8 +55,19 @@ module Word
         | Create ->
             WordDB.createWord {id=0; Value=state.Value; Translate = state.Translate; Created= System.DateTime.Now; idListWords= state.ListWord.id} |> ignore
             state, Cmd.ofMsg LoadFromDB
-        | NewValue str -> {state with Value = str }, Cmd.none
-        | NewTranslate str -> {state with Translate = str}, Cmd.none
+        | NewValue (str,dispatch)->
+            if state.CancelToken<>null then
+                state.CancelToken.Cancel()
+            if not(System.String.IsNullOrEmpty str) && (System.String.IsNullOrEmpty(state.Translate)) then
+                let cancellationSource = new CancellationTokenSource()
+                Async.Start (setAutoComplete str (dispatch), cancellationSource.Token)
+                {state with Value = str; CancelToken=cancellationSource; AutoComplete="" }, Cmd.none
+            else
+                {state with Value = str;}, Cmd.none
+        | NewTranslate str -> {state with Translate = str; AutoComplete=""},Cmd.ofMsg ClearAutoComplete
+        | SetAutoComplete str -> {state with AutoComplete = str}, Cmd.none
+        | AutoCompleteClick -> state, Cmd.ofMsg (NewTranslate(state.AutoComplete))
+        | ClearAutoComplete -> {state with AutoComplete= ""}, Cmd.none 
     let viewWords (state: State) (dispatch) : Types.IView list=
         List.ofSeq (seq {
             for i = 0 to state.Words.Length-1 do
@@ -79,13 +104,19 @@ module Word
                     TextBlock.text state.ListWord.Name
                 ]
                 TextBox.create[
-                    TextBox.onTextChanged(fun str -> (dispatch (NewValue(str))) )
+                    TextBox.onTextChanged(fun str -> (dispatch (NewValue(str,dispatch))) )
                     TextBox.watermark "Enter a word"
                 ]
                 TextBox.create[
-                    TextBox.onTextChanged(fun str -> (dispatch (NewTranslate(str))) )
+                    TextBox.onTextChanged(fun str -> if str=state.Translate then () else (dispatch (NewTranslate(str))) )
+                    TextBox.text state.Translate
                     TextBox.watermark "Enter a translate"
                 ]
+                if state.AutoComplete<>"" then
+                    Button.create[
+                        Button.content state.AutoComplete
+                        Button.onClick ( fun _ -> dispatch(AutoCompleteClick))
+                    ]
                 Button.create[
                     Button.isEnabled (((not (isNull state.Value)) && state.Value.Length <> 0)&& ((not (isNull state.Translate)) && state.Translate.Length <> 0))
                     Button.onClick (fun _ -> (dispatch Create))

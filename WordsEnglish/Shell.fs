@@ -44,7 +44,7 @@ module Shell =
         /// otherwise, you can use a batch operation on all of them
         /// you can add more init commands as you need
         let listWords,cmdListWords=ListWords.init;
-        let word, cmdWord = Word.init;
+        let word = Word.init;
         let writtingWords, cmdWrittingWords = WrittingWords.init;
         let panelSelectLearning, cmdPanelSelectLearning = PanelSelectLearning.init;
         {
@@ -57,7 +57,6 @@ module Shell =
         Cmd.batch [
             Cmd.map PanelSelectLearningMsg cmdPanelSelectLearning
             Cmd.map ListWordsMsg cmdListWords
-            Cmd.map WordMsg cmdWord
             Cmd.map WrittingWordsMsg cmdWrittingWords
            ]
 
