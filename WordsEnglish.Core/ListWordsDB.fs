@@ -3,6 +3,7 @@ namespace WordsEnglish.Core
 module ListWordsDB =
     open Microsoft.Data.Sqlite
     open FSharp.Data.Dapper
+    open System.Threading.Tasks
     [<CLIMutable>]
     type ListWords={
         id: int;
@@ -26,7 +27,7 @@ module ListWordsDB =
    
 
     let createListWords (listWords: ListWords)=
-        DB.querySingleAsync<int>{
+        (DB.querySingleAsync<int>{
             script "INSERT INTO ListWords (Name,TimeToRepiting, Created, Level, AmountRepetition) VALUES (@name, @timeToRepeat, @created, @level,@amountRepetition)"
             parameters (dict 
                     [
@@ -36,18 +37,19 @@ module ListWordsDB =
                         "level", box listWords.Level;
                         "amountRepetition", box listWords.AmountRepetition
                     ])
-        }|> Async.RunSynchronously
+        }|>  Async.StartAsTask).Result
     let getListWords page=
         let pagesize = 5;
         let offset = (page - 1) * pagesize
-        DB.querySeqAsync<ListWords>{
+        (DB.querySeqAsync<ListWords>{
             script "SELECT * FROM ListWords ORDER BY Created DESC LIMIT @pagesize OFFSET @offset  "
             parameters (dict[
                 "pagesize", box pagesize;
                 "offset", box offset;
             ])
 
-        }|> Async.RunSynchronously
+        }|> Async.StartAsTask).Result
+
     let updateLevel id level time amountRepetition=
        DB.querySingleAsync<int>{
             script " UPDATE ListWords SET Level=@level , TimeToRepiting=@timeToRepeat, AmountRepetition=@amountRepetition WHERE id=@id "

@@ -24,7 +24,6 @@ module Program =
 
     [<EntryPoint>]
     let main (args: string []) =
-        DB.checkDatabase ()
         AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .UseSkia()

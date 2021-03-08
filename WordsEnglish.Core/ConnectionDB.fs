@@ -4,15 +4,24 @@ namespace WordsEnglish.Core
     open Microsoft.Data.Sqlite
     open FSharp.Data.Dapper
     open System.IO
+    open System
     module DB =
-    
-        let private mkOnDisk () = new SqliteConnection ("Data Source = ./WordsEnglish.Core/wordsEnglish.db;")
+        let private dbpath =
+            let appData = Environment.GetFolderPath Environment.SpecialFolder.LocalApplicationData
+            let folder =  Path.Combine(appData, "WordsEnglish")
+            match Directory.Exists folder with
+            | true -> ()
+            | false -> 
+                Directory.CreateDirectory folder |> ignore
+            let path = Path.Combine(folder, "wordsEnglish.db")
+            sprintf "Data Source = %s;" path
+        let private mkOnDisk () = new SqliteConnection (dbpath)
         let private connectionF () = SqliteConnection (mkOnDisk())
 
         
         let querySeqAsync<'R>    = querySeqAsync<'R> (connectionF)
         let querySingleAsync<'R> = querySingleOptionAsync<'R> (connectionF)
-        let private restoreDB=
+        let private restoreDB ()=
             querySingleAsync<int>{
                 script 
                         "CREATE TABLE IF NOT EXISTS ListWords (
@@ -38,10 +47,4 @@ namespace WordsEnglish.Core
                         "
                 
             }|> Async.RunSynchronously |> ignore
-        let checkDatabase () =
-            match File.Exists("./WordsEnglish.Core/wordsEnglish.db") with
-            | false ->
-                connectionF() |> ignore
-                restoreDB
-            | _ -> ()
-        
+        restoreDB ()
