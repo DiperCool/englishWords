@@ -54,7 +54,7 @@ module Word
             {state with ListWord = listWord}, Cmd.ofMsg LoadFromDB
         | Create ->
             WordDB.createWord {id=0; Value=state.Value; Translate = state.Translate; Created= System.DateTime.Now; idListWords= state.ListWord.id} |> ignore
-            state, Cmd.ofMsg LoadFromDB
+            {state with Value=""; Translate=""}, Cmd.ofMsg LoadFromDB
         | NewValue (str,dispatch)->
             if state.CancelToken<>null then
                 state.CancelToken.Cancel()
@@ -104,7 +104,8 @@ module Word
                     TextBlock.text state.ListWord.Name
                 ]
                 TextBox.create[
-                    TextBox.onTextChanged(fun str -> (dispatch (NewValue(str,dispatch))) )
+                    TextBox.onTextChanged(fun str -> if str=state.Translate then () else (dispatch (NewValue(str, dispatch))) )
+                    TextBox.text state.Value
                     TextBox.watermark "Enter a word"
                 ]
                 TextBox.create[

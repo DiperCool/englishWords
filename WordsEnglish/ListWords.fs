@@ -48,7 +48,7 @@ module ListWords
                 Level = "one"
                 AmountRepetition = 0
             } |> ignore
-            state, Cmd.ofMsg LoadFromDb
+            {state with TextNewListWords= ""}, Cmd.ofMsg LoadFromDb
         | UdateTextNewListWords (str) -> {state with TextNewListWords = str}, Cmd.none
         | ViewWord listWords -> state, Cmd.none
         | NextPage -> {state with Page = state.Page+1}, Cmd.ofMsg LoadFromDb
@@ -130,7 +130,8 @@ module ListWords
             StackPanel.children[
                 yield TextBox.create[
                     TextBox.dock Dock.Top
-                    TextBox.onTextChanged(fun str -> (dispatch (UdateTextNewListWords(str))) )
+                    TextBox.text state.TextNewListWords
+                    TextBox.onTextChanged(fun str -> if str=state.TextNewListWords then () else  (dispatch (UdateTextNewListWords(str))) )
                 ]
                 yield Button.create[
                     Button.content "Create"
