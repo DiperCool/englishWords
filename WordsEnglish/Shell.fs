@@ -68,6 +68,9 @@ module Shell =
                     let s, cmd = Word.update (Word.Msg.SetListWord(listWords)) state.WordState
                     {state with AppView = Words; WordState=s }, Cmd.map WordMsg cmd
                 | ListWords.Msg.Learn listWords ->
+                    if (WordDB.countWords listWords.id).Value=0 then
+                        state,Cmd.none
+                    else
                     let s, cmd = PanelSelectLearning.update (PanelSelectLearning.Msg.SetListWords(listWords)) state.PanelSelectLearning
                     {state with AppView = PanelSelectLearning; PanelSelectLearning=s }, Cmd.map PanelSelectLearningMsg cmd
                 | _ ->

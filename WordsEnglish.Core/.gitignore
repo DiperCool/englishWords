@@ -59,7 +59,7 @@ bin/
 Bin/
 obj/
 Obj/
-
+wordsEnglish.db
 # Visual Studio 2015 cache/options directory
 .vs/
 /wwwroot/dist/

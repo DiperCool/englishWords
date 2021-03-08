@@ -26,7 +26,7 @@ namespace WordsEnglish.Core
                 let deserialized = Json.deserialize<Json2> body
 
                 return match response.IsSuccessStatusCode with
-                | true -> deserialized.responseData.translatedText
-                | false -> failwith body
+                        | true -> deserialized.responseData.translatedText
+                        | false -> failwith body
             }
 

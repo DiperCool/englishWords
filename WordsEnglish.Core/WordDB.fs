@@ -1,6 +1,6 @@
 namespace WordsEnglish.Core
 module WordDB =
-    open Npgsql.FSharp
+    
     [<CLIMutable>]
     type Word={
         id: int
@@ -28,3 +28,10 @@ module WordDB =
                 ("id", box idListWords)
             ])
         }|> Async.RunSynchronously |> List.ofSeq
+    let countWords id=
+        DB.querySingleAsync<int>{
+            script "SELECT COUNT(*) FROM Word WHERE idListWords=@id"
+            parameters (dict[
+                "id", box id
+            ])
+        }|>Async.RunSynchronously

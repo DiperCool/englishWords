@@ -26,7 +26,7 @@ namespace WordsEnglish.Core
                             AmountRepetition INTEGER
                         );
 
-                        CREATE TABLE IF NOT EXISTS Words (
+                        CREATE TABLE IF NOT EXISTS Word (
                             id          INTEGER  PRIMARY KEY
                                                  UNIQUE
                                                  NOT NULL,
