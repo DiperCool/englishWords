@@ -74,7 +74,7 @@ module WrittingWords
                 TextBox.create[
                     TextBox.watermark "enter the value"
                     TextBox.text state.TextValue
-                    TextBox.onTextChanged ( fun text -> dispatch(Text text))
+                    TextBox.onTextChanged ( fun text -> if text=state.TextValue then () else dispatch(Text text))
                 ]
                 Button.create[
                     Button.content "check"

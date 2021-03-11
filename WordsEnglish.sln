@@ -9,6 +9,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "WordsEnglish.Core", "WordsE
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "WordsEnglish.Core.Tests", "WordsEnglish.Core.Tests\WordsEnglish.Core.Tests.fsproj", "{57AAA674-F50F-4EEB-A716-83D61A825069}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "WordsEnglish.Notifitication", "WordsEnglish.Notifitication\WordsEnglish.Notifitication.fsproj", "{E2BD75B6-B828-4F52-ABEC-E21931EC2993}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,5 +60,17 @@ Global
 		{2CEFEEDA-CEEB-42CD-A92C-050AEB77FD52}.Release|x64.Build.0 = Release|Any CPU
 		{2CEFEEDA-CEEB-42CD-A92C-050AEB77FD52}.Release|x86.ActiveCfg = Release|Any CPU
 		{2CEFEEDA-CEEB-42CD-A92C-050AEB77FD52}.Release|x86.Build.0 = Release|Any CPU
+		{E2BD75B6-B828-4F52-ABEC-E21931EC2993}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2BD75B6-B828-4F52-ABEC-E21931EC2993}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2BD75B6-B828-4F52-ABEC-E21931EC2993}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E2BD75B6-B828-4F52-ABEC-E21931EC2993}.Debug|x64.Build.0 = Debug|Any CPU
+		{E2BD75B6-B828-4F52-ABEC-E21931EC2993}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E2BD75B6-B828-4F52-ABEC-E21931EC2993}.Debug|x86.Build.0 = Debug|Any CPU
+		{E2BD75B6-B828-4F52-ABEC-E21931EC2993}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2BD75B6-B828-4F52-ABEC-E21931EC2993}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2BD75B6-B828-4F52-ABEC-E21931EC2993}.Release|x64.ActiveCfg = Release|Any CPU
+		{E2BD75B6-B828-4F52-ABEC-E21931EC2993}.Release|x64.Build.0 = Release|Any CPU
+		{E2BD75B6-B828-4F52-ABEC-E21931EC2993}.Release|x86.ActiveCfg = Release|Any CPU
+		{E2BD75B6-B828-4F52-ABEC-E21931EC2993}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

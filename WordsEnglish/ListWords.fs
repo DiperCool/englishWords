@@ -47,6 +47,7 @@ module ListWords
                 Created= System.DateTime.Now;
                 Level = "one"
                 AmountRepetition = 0
+                IsNotificated = false
             } |> ignore
             {state with TextNewListWords= ""}, Cmd.ofMsg LoadFromDb
         | UdateTextNewListWords (str) -> {state with TextNewListWords = str}, Cmd.none

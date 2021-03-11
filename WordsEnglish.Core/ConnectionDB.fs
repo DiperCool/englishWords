@@ -32,7 +32,8 @@ namespace WordsEnglish.Core
                             TimeToRepiting   DATE,
                             Created          DATE,
                             Level            STRING,
-                            AmountRepetition INTEGER
+                            AmountRepetition INTEGER,
+                            IsNotificated    BOOLEAN
                         );
 
                         CREATE TABLE IF NOT EXISTS Word (

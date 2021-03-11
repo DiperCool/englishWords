@@ -6,7 +6,8 @@ module WordsHelper
         TimeToRepiting= System.DateTime.Now;
         Created = System.DateTime.Now;
         Level= ""
-        AmountRepetition = 0        
+        AmountRepetition = 0
+        IsNotificated = false        
     }
 
     let emptyWord: WordDB.Word={

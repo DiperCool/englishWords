@@ -12,18 +12,9 @@ module ListWordsDB =
         Created: System.DateTime
         Level : string
         AmountRepetition : int
-
+        IsNotificated: bool
     }
 
-    type ListWords2={
-        id: int;
-        Name : int;
-        TimeToRepiting: int
-        Created: int
-        Level : int
-        AmountRepetition : int
-
-    }
    
 
     let createListWords (listWords: ListWords)=
@@ -52,7 +43,7 @@ module ListWordsDB =
 
     let updateLevel id level time amountRepetition=
        DB.querySingleAsync<int>{
-            script " UPDATE ListWords SET Level=@level , TimeToRepiting=@timeToRepeat, AmountRepetition=@amountRepetition WHERE id=@id "
+            script " UPDATE ListWords SET Level=@level , TimeToRepiting=@timeToRepeat, AmountRepetition=@amountRepetition, IsNotificated= 0 WHERE id=@id "
             parameters (dict[
                 ("@id", box id);
                 ("@level", box level)
@@ -69,5 +60,24 @@ module ListWordsDB =
                 ("@amountRepetition", box amoutRepetition)
             ])
         }|> Async.RunSynchronously                        
-
+    let getListsWordsWhichReadyToLearn ()=
+        let res=(DB.querySeqAsync<ListWords>{
+            script "SELECT * FROM ListWords WHERE TimeToRepiting< @now AND IsNotificated = @status"
+            parameters (dict[
+                ("@now", box System.DateTime.Now)
+                ("@status", box "false")
+            ])
+            
+        }|> Async.RunSynchronously)
+        res
+    let setNotificateStatus (id: int) (bool : string)=
+        let res=(DB.querySingleAsync<int>{
+            script "UPDATE ListWords SET IsNotificated= @status WHERE id=@id"
+            parameters (dict[
+                ("@status", box bool);
+                ("@id", box id)
+            ])
+            
+        }|> Async.RunSynchronously)
+        res
        
