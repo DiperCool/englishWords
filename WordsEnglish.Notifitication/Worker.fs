@@ -15,10 +15,10 @@ open System.Threading.Tasks
 module Notifitication=
     let send text=
         let newProcess= new Process()
-
+        let command = $"notify-send {text} -u critical -t 60"
         let infoProcces= new ProcessStartInfo()
-        infoProcces.FileName <- "/bin/notify-send"
-        infoProcces.Arguments <-  $"{text} -u critical -t 60"
+        infoProcces.FileName <- "/bin/bash"
+        infoProcces.Arguments <-  $"-c \"{command}\""
         infoProcces.RedirectStandardOutput <-  true
         infoProcces.UseShellExecute <-  false
         infoProcces.CreateNoWindow <-  true
@@ -45,7 +45,7 @@ module Worker =
                 let res = ListWordsDB.getListsWordsWhichReadyToLearn ()
                 for (item: ListWordsDB.ListWords) in res do
                     (ListWordsDB.setNotificateStatus item.id "true") |> ignore
-                    Notifitication.send $"Go learn {item.Name} list" |> ignore
+                    Notifitication.send $"'Go learn {item.Name} list'" |> ignore
                     logger.LogInformation($"Notified: {item.Name}")
                 do! Async.Sleep(5000)
             }
