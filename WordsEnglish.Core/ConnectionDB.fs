@@ -44,6 +44,7 @@ namespace WordsEnglish.Core
                             Translate   TEXT,
                             idListWords INTEGER  REFERENCES ListWords (id),
                             Created     DATETIME
+                            guidMedia   STRING
                         );
                         "
                 

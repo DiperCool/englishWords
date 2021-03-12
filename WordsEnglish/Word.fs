@@ -12,6 +12,8 @@ module Word
     open Avalonia.Layout
     open Avalonia.Media
     open System.Threading
+    open System.IO
+    open System
     type State={
         ListWord: ListWordsDB.ListWords
         Words: WordDB.Word list
@@ -40,6 +42,7 @@ module Word
     | SetAutoComplete of string
     | AutoCompleteClick
     | ClearAutoComplete
+    | PlayMedia of WordDB.Word
     let setAutoComplete str (dispatch: (Msg -> unit)) = 
         async{
             do! Async.Sleep 2000
@@ -53,7 +56,9 @@ module Word
         | SetListWord listWord ->
             {state with ListWord = listWord}, Cmd.ofMsg LoadFromDB
         | Create ->
-            WordDB.createWord {id=0; Value=state.Value; Translate = state.Translate; Created= System.DateTime.Now; idListWords= state.ListWord.id} |> ignore
+            let guid = Guid.NewGuid().ToString()
+            TTS.getTranslate state.Value guid
+            WordDB.createWord {id=0; Value=state.Value; Translate = state.Translate; Created= System.DateTime.Now; idListWords= state.ListWord.id; guidMedia=guid} |> ignore
             {state with Value=""; Translate=""}, Cmd.ofMsg LoadFromDB
         | NewValue (str,dispatch)->
             if state.CancelToken<>null then
@@ -67,7 +72,17 @@ module Word
         | NewTranslate str -> {state with Translate = str; AutoComplete=""},Cmd.ofMsg ClearAutoComplete
         | SetAutoComplete str -> {state with AutoComplete = str}, Cmd.none
         | AutoCompleteClick -> state, Cmd.ofMsg (NewTranslate(state.AutoComplete))
-        | ClearAutoComplete -> {state with AutoComplete= ""}, Cmd.none 
+        | ClearAutoComplete -> {state with AutoComplete= ""}, Cmd.none
+        | PlayMedia word ->
+            let file = (Path.Combine ((Environment.GetFolderPath Environment.SpecialFolder.LocalApplicationData), $"WordsEnglish/media/{word.guidMedia}.wav"))
+            match File.Exists file with
+            | false ->
+               let guid = Guid.NewGuid().ToString()
+               WordDB.setNewGuid word.id guid |>ignore
+               TTS.getTranslate word.Value guid
+               state, Cmd.ofMsg (PlayMedia({word with guidMedia=guid}))
+            | true -> TTS.run file; state, Cmd.none
+          
     let viewWords (state: State) (dispatch) : Types.IView list=
         List.ofSeq (seq {
             for i = 0 to state.Words.Length-1 do
@@ -76,7 +91,10 @@ module Word
                             TextBlock.fontSize(18.)
                             TextBlock.margin(5.0, 5.0)
                             Grid.column(0)
-                            Grid.row(i)
+                            Grid.row(i) 
+                            TextBlock.onTapped ((fun _ -> 
+                                                                dispatch (PlayMedia (state.Words.[i]))
+                                                                ), Always)
                             TextBlock.text(state.Words.[i].Value)
                         ]
                 )
@@ -86,6 +104,7 @@ module Word
                             TextBlock.margin(5.0, 5.0)
                             Grid.column(2)
                             Grid.row(i)
+                            
                             TextBlock.text(state.Words.[i].Translate)
                             
                         ]

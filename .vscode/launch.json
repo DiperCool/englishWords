@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "WordsEnglish.Notifitication/bin/Debug/net5.0/WordsEnglish.Notifitication.dll",
+            "program": "WordsEnglish/bin/Debug/net5/WordsEnglish.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,

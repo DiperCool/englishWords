@@ -16,4 +16,5 @@ module WordsHelper
         Translate=""
         idListWords = 0
         Created= System.DateTime.Now
+        guidMedia= ""
     }

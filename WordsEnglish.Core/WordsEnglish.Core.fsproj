@@ -7,6 +7,7 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TTS.fs" />
     <Compile Include="TranslateHelper.fs" />
     <Compile Include="LevelHelper.fs" />
     <Compile Include="ConnectionDB.fs" />

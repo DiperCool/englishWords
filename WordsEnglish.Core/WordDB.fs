@@ -8,16 +8,18 @@ module WordDB =
         Translate: string
         idListWords : int
         Created: System.DateTime
+        guidMedia: string
     }
 
     let createWord (word: Word)=
         DB.querySingleAsync<int>{
-            script "INSERT INTO Word (Value, Translate, idListWords, Created) VALUES (@value, @translate, @idListWords, @created)"
+            script "INSERT INTO Word (Value, Translate, idListWords, Created,guidMedia) VALUES (@value, @translate, @idListWords, @created,@guidMedia)"
             parameters (dict[
                 ("value", box word.Value ); 
                 ("translate", box word.Translate);
                 ("idListWords", box word.idListWords); 
-                ("created", box word.Created) 
+                ("created", box word.Created);
+                ("guidMedia", box word.guidMedia)
             ])
         }|> Async.RunSynchronously
     
@@ -33,5 +35,13 @@ module WordDB =
             script "SELECT COUNT(*) FROM Word WHERE idListWords=@id"
             parameters (dict[
                 "id", box id
+            ])
+        }|>Async.RunSynchronously
+    let setNewGuid id guid= 
+        DB.querySingleAsync<int>{
+            script "UPDATE Word SET guidMedia=@guidMedia WHERE id=@id"
+            parameters (dict[
+                "@id", box id
+                "@guidMedia", box guid
             ])
         }|>Async.RunSynchronously
