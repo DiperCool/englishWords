@@ -7,7 +7,7 @@ module WordsHelper
         Created = System.DateTime.Now;
         Level= ""
         AmountRepetition = 0
-        IsNotificated = false        
+        IsNotificated = "false"        
     }
 
     let emptyWord: WordDB.Word={

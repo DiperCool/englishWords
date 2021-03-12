@@ -12,14 +12,14 @@ module ListWordsDB =
         Created: System.DateTime
         Level : string
         AmountRepetition : int
-        IsNotificated: bool
+        IsNotificated: string
     }
 
    
 
     let createListWords (listWords: ListWords)=
         (DB.querySingleAsync<int>{
-            script "INSERT INTO ListWords (Name,TimeToRepiting, Created, Level, AmountRepetition) VALUES (@name, @timeToRepeat, @created, @level,@amountRepetition)"
+            script "INSERT INTO ListWords (Name,TimeToRepiting, Created, Level, AmountRepetition,IsNotificated) VALUES (@name, @timeToRepeat, @created, @level,@amountRepetition,@isNotificated)"
             parameters (dict 
                     [
                         "name", box listWords.Name; 
@@ -27,6 +27,7 @@ module ListWordsDB =
                         "created", box listWords.Created;
                         "level", box listWords.Level;
                         "amountRepetition", box listWords.AmountRepetition
+                        "isNotificated", box listWords.IsNotificated
                     ])
         }|>  Async.StartAsTask).Result
     let getListWords page=
@@ -43,12 +44,13 @@ module ListWordsDB =
 
     let updateLevel id level time amountRepetition=
        DB.querySingleAsync<int>{
-            script " UPDATE ListWords SET Level=@level , TimeToRepiting=@timeToRepeat, AmountRepetition=@amountRepetition, IsNotificated= 0 WHERE id=@id "
+            script " UPDATE ListWords SET Level=@level , TimeToRepiting=@timeToRepeat, AmountRepetition=@amountRepetition, IsNotificated= @status WHERE id=@id "
             parameters (dict[
                 ("@id", box id);
                 ("@level", box level)
                 ("@timeToRepeat", box time)
                 ("@amountRepetition", box amountRepetition)
+                ("@status", box "false")
             ])
         } |> Async.RunSynchronously
        
