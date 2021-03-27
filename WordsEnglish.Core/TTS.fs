@@ -21,7 +21,7 @@ namespace WordsEnglish.Core
         let getTranslate (text:string) (guid:string)=
             createDirectoryIfNotExist ()
             let httpClient= new HttpClient()
-            let url = new Uri($"http://api.voicerss.org/?key=8ab88e67a0d945269eacc0bb117e3253&hl=en-us&src={text}")
+            let url = new Uri($"http://api.voicerss.org/?a=44khz_16bit_mono&key=8ab88e67a0d945269eacc0bb117e3253&hl=en-us&src={text}")
             let array = httpClient.GetByteArrayAsync(url)
             let path = Path.Combine (specialFolder, $"WordsEnglish/media/{guid}.wav")
 

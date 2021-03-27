@@ -83,11 +83,9 @@ module Shell =
             match msg with
             | WrittingWords.Msg.GoBack ->
                 let s, cmd = WrittingWords.update msg state.WrittingWords
-                let sListWords, cmdListWords= ListWords.init
-                {state with WrittingWords=s;ListWordsState=sListWords}, Cmd.batch[
+                {state with WrittingWords=s}, Cmd.batch[
                     Cmd.map WrittingWordsMsg cmd;
                     Cmd.ofMsg GoBack;
-                    Cmd.map ListWordsMsg cmdListWords;
                 ]
             | _ ->
                 let s, cmd = WrittingWords.update msg state.WrittingWords

@@ -61,7 +61,8 @@ module WrittingWords
             let res = ListWordsDB.updateLevel state.ListWords.id newLevel ( LevelHelper.getTimeToRepeat  newLevel) 0
             state, Cmd.ofMsg GoBack
 
-        | GoBack -> init
+        | GoBack ->
+            init
     let view (state: State) (dispatch) =
         StackPanel.create[
             StackPanel.children[
